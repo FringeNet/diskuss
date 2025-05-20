@@ -1,0 +1,6 @@
+requests
+sqlite-vss
+python-docx
+PyMuPDF
+tkinter
+numpy 
