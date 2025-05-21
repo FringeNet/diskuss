@@ -22,6 +22,7 @@ class DiskussApp:
         self.indexing_queue = queue.Queue()
         self.processing_thread = None
         self.stop_indexing = threading.Event()
+        self.top_k_documents = tk.IntVar(value=5) # Default k value
 
         # --- Ollama Status ---
         self.status_frame = tk.Frame(root)
@@ -73,12 +74,19 @@ class DiskussApp:
         self.chat_history = scrolledtext.ScrolledText(self.chat_frame, state='disabled', wrap=tk.WORD)
         self.chat_history.pack(pady=5, padx=5, fill=tk.BOTH, expand=True)
 
-        self.query_entry = tk.Entry(self.chat_frame)
-        self.query_entry.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=5, pady=5)
+        self.query_controls_frame = tk.Frame(self.chat_frame) # New frame for query input and k selection
+        self.query_controls_frame.pack(fill=tk.X, padx=5, pady=5)
+
+        self.query_entry = tk.Entry(self.query_controls_frame)
+        self.query_entry.pack(side=tk.LEFT, fill=tk.X, expand=True)
         self.query_entry.bind("<Return>", self.send_query_event)
 
-        self.send_button = tk.Button(self.chat_frame, text="Send", command=self.send_query)
-        self.send_button.pack(side=tk.LEFT, padx=5, pady=5)
+        tk.Label(self.query_controls_frame, text="Top K:").pack(side=tk.LEFT, padx=(10, 2))
+        self.top_k_spinbox = tk.Spinbox(self.query_controls_frame, from_=1, to=20, textvariable=self.top_k_documents, width=3)
+        self.top_k_spinbox.pack(side=tk.LEFT)
+
+        self.send_button = tk.Button(self.query_controls_frame, text="Send", command=self.send_query)
+        self.send_button.pack(side=tk.LEFT, padx=5)
 
         # Initialize database
         initialize_database()
@@ -313,13 +321,22 @@ class DiskussApp:
 
         if query_embedding is not None:
             # Perform document search
-            search_results = search_documents(DATABASE_FILE, query_embedding, k=5)
+            k_value = self.top_k_documents.get()
+            search_results = search_documents(DATABASE_FILE, query_embedding, k=k_value)
 
             if search_results:
                 # Prepare context for the chat model
-                context_docs = "\n\n".join([f"File: {path}\nScore: {score:.4f}\n" for path, score in search_results])
+                context_parts = []
+                for path, score in search_results:
+                    file_content = process_file(path) # Extract file content
+                    if file_content:
+                        context_parts.append(f"File: {os.path.basename(path)}\nScore: {score:.4f}\nContent:\n{file_content[:1000]}\n---") # Limit content length for context
+                    else:
+                        context_parts.append(f"File: {os.path.basename(path)}\nScore: {score:.4f}\nContent: [Could not extract content]")
+
+                context_docs = "\n\n".join(context_parts)
                 messages = [
-                    {"role": "system", "content": "You are a helpful assistant. Use the provided document information to answer the user's query."},
+                    {"role": "system", "content": "You are a helpful assistant. Use the provided document information (including file content) to answer the user's query."},
                     {"role": "user", "content": f"Documents:\n{context_docs}\n\nQuery: {query}"}
                 ]
 
