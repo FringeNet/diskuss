@@ -19,37 +19,54 @@ Diskuss is a Python-based desktop application that allows users to interact with
 ## Prerequisites
 
 *   **Python 3.8+**
-*   **Ollama**: You must have Ollama installed and running on your machine. Download it from [https://ollama.com/](https://ollama.com/).
-    *   Ensure you have downloaded at least one embedding model (e.g., `nomic-embed-text`) and one chat model (e.g., `llama3`) through Ollama:
+*   **Ollama**: You must have Ollama installed and running on your machine. Download it from [https://ollama.com/download](https://ollama.com/download).
+    *   Ensure you have downloaded at least one embedding model and one chat model through Ollama. Examples:
         ```bash
         ollama pull nomic-embed-text
-        ollama pull llama3
+        ollama pull qwen3:4b  # Example for ~6GB VRAM
+        ollama pull qwen3:8b  # Example for ~10GB VRAM 
+        # Or other models like llama3, mistral, etc.
         ```
 
 ## Setup and Installation
 
 1.  **Clone the repository (if applicable) or download the source files.**
 
-2.  **Create a virtual environment (recommended):**
-    ```bash
-    python -m venv venv
-    source venv/bin/activate  # On Windows use `venv\Scripts\activate`
-    ```
+2.  **Install Python**: If you don't have Python installed, download it from [python.org](https://www.python.org/) (ensure version 3.8+ is selected).
 
-3.  **Install the required Python libraries:**
+3.  **Create and activate a virtual environment (recommended):**
+
+    *   **Linux/macOS:**
+        ```bash
+        python3 -m venv venv
+        source venv/bin/activate
+        ```
+
+    *   **Windows (Command Prompt/PowerShell):**
+        ```bash
+        python -m venv venv
+        .\venv\Scripts\activate
+        ```
+
+4.  **Install the required Python libraries:**
     ```bash
     pip install -r requirements.txt
     ```
 
-4.  **Ensure Ollama is running.** You can check its status from the Diskuss application interface.
+5.  **Ensure Ollama is running with the necessary models downloaded.** You can check its status from the Diskuss application interface or by running `ollama list` in your terminal.
 
 ## Running the Application
 
 Once the setup is complete and Ollama is running with the necessary models, you can start Diskuss:
 
-```bash
-python diskuss_app.py
-```
+*   **Linux/macOS:**
+    ```bash
+    python3 diskuss_app.py
+    ```
+*   **Windows:**
+    ```bash
+    python diskuss_app.py
+    ```
 
 ## How to Use
 
