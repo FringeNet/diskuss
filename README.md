@@ -23,7 +23,7 @@ Diskuss is a Python-based desktop application that allows users to interact with
     *   Ensure you have downloaded at least one embedding model and one chat model through Ollama. Examples:
         ```bash
         ollama pull nomic-embed-text
-        ollama pull qwen3:4b  # Example for ~6GB VRAM
+        #ollama pull qwen3:4b  # Example for ~6GB VRAM
         ollama pull qwen3:8b  # Example for ~10GB VRAM 
         # Or other models like llama3, mistral, etc.
         ```
