@@ -330,9 +330,9 @@ class DiskussApp:
                 for path, score in search_results:
                     file_content = process_file(path) # Extract file content
                     if file_content:
-                        context_parts.append(f"File: {os.path.basename(path)}\nScore: {score:.4f}\nContent:\n{file_content[:1000]}\n---") # Limit content length for context
+                        context_parts.append(f"File: {path}\nScore: {score:.4f}\nContent:\n{file_content[:1000]}\n---") # Limit content length for context
                     else:
-                        context_parts.append(f"File: {os.path.basename(path)}\nScore: {score:.4f}\nContent: [Could not extract content]")
+                        context_parts.append(f"File: {path}\nScore: {score:.4f}\nContent: [Could not extract content]")
 
                 context_docs = "\n\n".join(context_parts)
                 messages = [
