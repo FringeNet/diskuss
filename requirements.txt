@@ -2,5 +2,6 @@ requests
 sqlite-vss
 python-docx
 PyMuPDF
-tkinter
+# tkinter # Removed tkinter as it's a standard library
 numpy 
+PyQt6 

@@ -94,6 +94,22 @@ def search_documents(db_path, query_embedding, k=5):
 
     return [(file_path, score) for score, file_path in similarities[:k]]
 
+def count_total_documents(db_path=DATABASE_FILE):
+    """Counts the total number of documents in the database."""
+    conn = None
+    count = 0
+    try:
+        conn = sqlite3.connect(db_path)
+        cursor = conn.cursor()
+        cursor.execute("SELECT COUNT(*) FROM documents")
+        count = cursor.fetchone()[0]
+    except sqlite3.Error as e:
+        print(f"Database error counting documents: {e}")
+    finally:
+        if conn:
+            conn.close()
+    return count
+
 if __name__ == '__main__':
     # Example Usage (for testing)
     initialize_database()
